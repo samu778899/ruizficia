@@ -1,0 +1,64 @@
+<body>
+    <h1>La nueva era</h1>
+  
+    <div id="conversacion">
+      <p class="usuario">Usuario: En que te puedo ayudar?
+      </p>
+    </div>
+  
+    <form id="formulario">
+      <input type="text" id="pregunta" placeholder="Escribe tu pregunta">
+      <button type="submit">Enviar</button>
+    </form>
+  
+    <header> <h1>Validacion de RUIZFICIAL</h1></header>  
+    <hr>
+    <form action="recibe.php" method="POST">
+  
+  
+    <script>
+      function obtenerBaseDatosIA() {
+        const nombreBaseDatos = document.getElementById('nombreBaseDatos').value;
+  
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `https://gemini.google.com/${nombreBaseDatos}`);
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const baseDeDatos = JSON.parse(xhr.responseText);
+            mostrarResultado(baseDeDatos);
+          } else {
+            mostrarError(xhr.status, xhr.statusText);
+          }
+        };
+        xhr.onerror = function() {
+          mostrarError('Error de red', 'No se pudo conectar con la API');
+        };
+        xhr.send();
+      }
+  
+      function mostrarResultado(baseDeDatos) {
+        const resultadoDiv = document.getElementById('resultado');
+        resultadoDiv.innerHTML = '';
+  
+        const preTitulo = document.createElement('pre');
+        preTitulo.textContent = 'Base de datos encontrada:';
+        resultadoDiv.appendChild(preTitulo);
+  
+        const preDatos = document.createElement('pre');
+        preDatos.textContent = JSON.stringify(baseDeDatos, null, 2);
+        resultadoDiv.appendChild(preDatos);
+      }
+  
+      function mostrarError(codigoError, mensajeError) {
+        const resultadoDiv = document.getElementById('resultado');
+        resultadoDiv.innerHTML = '';
+  
+        const preError = document.createElement('pre');
+        preError.textContent = `Error: ${codigoError} - ${mensajeError}`;
+        resultadoDiv.appendChild(preError);
+      }
+    </script>
+  
+  
+  </body>
+  </html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot HTML con LLM</title>
+</head>
+<body>
+  <h1>Chatbot HTML con LLM</h1>
+
+  <div id="conversacion">
+    <p class="usuario">Usuario: Hola</p>
+
+    <p class="chatbot">Chatbot: Hola, ¿en qué puedo ayudarte?</p>
+  </div>
+
+  <form id="formulario">
+    <input type="text" id="pregunta" placeholder="Escribe tu pregunta">
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    formulario.addEventListener('submit', async function(event) {
+        event.preventDefault();
+      // Obtener la pregunta del usuario
+      const preguntaUsuario = preguntaInput.value.trim();
+
+      // Añadir el mensaje del usuario a la conversación
+      const mensajeUsuario = document.createElement('p');
+      mensajeUsuario.classList.add('usuario');
+      mensajeUsuario.textContent = `Usuario: ${preguntaUsuario}`;
+      conversacion.appendChild(mensajeUsuario);
+
+      // Limpiar el campo de entrada
+      preguntaInput.value = "";
+
+      // Responder la pregunta del usuario usando un LLM
+      const respuesta = await responderPreguntaLLM(preguntaUsuario);
+
+      // Añadir la respuesta del chatbot a la conversación
+      const mensajeChatbot = document.createElement('p');
+      mensajeChatbot.classList.add('chatbot');
+      mensajeChatbot.innerHTML = respuesta;
+      conversacion.appendChild(mensajeChatbot);
+
+      // Desplazarse automáticamente al final de la conversación
+      conversacion.scrollTop = conversacion.scrollHeight;
+    });
+
+    async function responderPreguntaLLM(pregunta) {
+      // Acceder al modelo de lenguaje grande (LLM)
+      const url = "https://gemini.google.com";
+      const data = {
+        "text": pregunta
+      };
+      const headers = {
+        "Authorization": "Bearer YOUR_API_KEY"
+      };
+
+      // Enviar la solicitud al LLM
+      const respuesta = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+      });
+
+      // Procesar la respuesta del LLM
+      if (respuesta.status === 200) {
+        const respuestaJSON = await respuesta.json();
+        const respuestaTexto = respuestaJSON["predictions"][0]["text"];
+        return respuestaTexto;
+      } else {
+        console.error(`Error al acceder al LLM: ${respuesta.status}`);
+        return null;
+      }
+    }
+  </script>
+</body>
+</html>
